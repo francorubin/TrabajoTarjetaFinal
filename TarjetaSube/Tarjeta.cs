@@ -21,7 +21,6 @@ namespace TarjetaSube
 
         public bool Cargar(decimal monto)
         {
-           
             bool montoValido = false;
             foreach (decimal carga in CargasPermitidas)
             {
@@ -37,10 +36,8 @@ namespace TarjetaSube
                 return false;
             }
 
-           
             decimal nuevoSaldo = saldo + monto;
 
-          
             if (nuevoSaldo > LIMITE_SALDO_MAXIMO)
             {
                 return false;
@@ -52,7 +49,6 @@ namespace TarjetaSube
 
         public virtual bool DescontarSaldo(decimal monto)
         {
-         
             if (saldo - monto < LIMITE_SALDO_NEGATIVO)
             {
                 return false;

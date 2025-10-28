@@ -106,3 +106,5 @@ C:\Users\PC\source\repos\TarjetaSube\TarjetaSubeTest\obj\Debug\net5.0\TarjetaSub
 C:\Users\PC\source\repos\TarjetaSube\TarjetaSubeTest\obj\Debug\net5.0\ref\TarjetaSubeTest.dll
 C:\Users\PC\source\repos\TarjetaSube\TarjetaSubeTest\obj\Debug\net5.0\TarjetaSubeTest.pdb
 C:\Users\PC\source\repos\TarjetaSube\TarjetaSubeTest\obj\Debug\net5.0\TarjetaSubeTest.genruntimeconfig.cache
+C:\Users\veron\OneDrive\Documents\repos\TarjetaFinal\TarjetaSubeTest\obj\Debug\net5.0\TarjetaSubeTest.dll
+C:\Users\veron\OneDrive\Documents\repos\TarjetaFinal\TarjetaSubeTest\obj\Debug\net5.0\TarjetaSubeTest.pdb

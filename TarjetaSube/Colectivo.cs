@@ -22,20 +22,12 @@ namespace TarjetaSube
         }
 
         public Boleto? PagarCon(Tarjeta tarjeta)
-{
-    
-    decimal tarifaAPagar = tarjeta.ObtenerTarifa(TARIFA_BASICA);
-    
-    if (tarjeta.DescontarSaldo(tarifaAPagar))
-    {
-        return new Boleto(tarifaAPagar, tarjeta.Saldo, this.linea);
-    }
-    return null;
-}
         {
-            if (tarjeta.DescontarSaldo(TARIFA_BASICA))
+            decimal tarifaAPagar = tarjeta.ObtenerTarifa(TARIFA_BASICA);
+
+            if (tarjeta.DescontarSaldo(tarifaAPagar))
             {
-                return new Boleto(TARIFA_BASICA, tarjeta.Saldo, this.linea);
+                return new Boleto(tarifaAPagar, tarjeta.Saldo, this.linea);
             }
             return null;
         }
