@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TarjetaSube
 {
@@ -21,6 +25,7 @@ namespace TarjetaSube
 
         public bool Cargar(decimal monto)
         {
+            // Validar que el monto esté en la lista de cargas permitidas
             bool montoValido = false;
             foreach (decimal carga in CargasPermitidas)
             {
@@ -36,25 +41,31 @@ namespace TarjetaSube
                 return false;
             }
 
+            // Calcular el nuevo saldo
             decimal nuevoSaldo = saldo + monto;
 
+            // Verificar que no supere el límite máximo
             if (nuevoSaldo > LIMITE_SALDO_MAXIMO)
             {
                 return false;
             }
 
+            // Acreditar la carga
             saldo = nuevoSaldo;
             return true;
         }
 
         public virtual bool DescontarSaldo(decimal monto)
         {
-            if (saldo - monto < LIMITE_SALDO_NEGATIVO)
+            decimal nuevoSaldo = saldo - monto;
+
+            // Verificar que no supere el límite de saldo negativo
+            if (nuevoSaldo < LIMITE_SALDO_NEGATIVO)
             {
                 return false;
             }
 
-            saldo -= monto;
+            saldo = nuevoSaldo;
             return true;
         }
 

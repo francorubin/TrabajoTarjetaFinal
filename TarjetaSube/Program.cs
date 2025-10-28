@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TarjetaSube
 {
@@ -12,7 +16,7 @@ namespace TarjetaSube
             Console.WriteLine("2. Modo Demo Automático (demostración predefinida)");
             Console.Write("\nIngrese su opción (1 o 2): ");
 
-            string modoSeleccionado = Console.ReadLine();
+            string? modoSeleccionado = Console.ReadLine();
 
             if (modoSeleccionado == "1")
             {
@@ -50,7 +54,7 @@ namespace TarjetaSube
                 Console.WriteLine("4. Salir");
                 Console.Write("\nSeleccione una opción: ");
 
-                string opcion = Console.ReadLine();
+                string? opcion = Console.ReadLine();
                 Console.WriteLine();
 
                 switch (opcion)
@@ -137,16 +141,20 @@ namespace TarjetaSube
             Console.WriteLine($"\nSaldo disponible: ${tarjeta.Saldo}");
             Console.WriteLine($"Tarifa: $1580");
 
-            if (tarjeta.Saldo < 1580)
+            if (tarjeta.Saldo < 1580 && tarjeta.Saldo >= -1200)
+            {
+                Console.WriteLine("\nUsando VIAJE PLUS (saldo negativo permitido hasta -$1200)");
+            }
+            else if (tarjeta.Saldo < -1200)
             {
                 Console.WriteLine("\nSALDO INSUFICIENTE");
-                Console.WriteLine($"Te faltan: ${1580 - tarjeta.Saldo}");
+                Console.WriteLine($"Has alcanzado el límite de saldo negativo");
                 Console.WriteLine("Por favor, carga saldo primero.");
                 return;
             }
 
             Console.Write("\nIngrese la línea de colectivo (ej: K, 143, 102): ");
-            string linea = Console.ReadLine();
+            string? linea = Console.ReadLine();
 
             if (string.IsNullOrWhiteSpace(linea))
             {
@@ -166,10 +174,16 @@ namespace TarjetaSube
                 Console.WriteLine($"Monto pagado: ${boleto.Monto}");
                 Console.WriteLine($"Saldo restante: ${boleto.SaldoRestante}");
                 Console.WriteLine($"Fecha y hora: {boleto.Fecha:dd/MM/yyyy HH:mm:ss}");
+
+                if (boleto.SaldoRestante < 0)
+                {
+                    Console.WriteLine($"\n⚠ VIAJE PLUS utilizado. Saldo negativo: ${boleto.SaldoRestante}");
+                }
             }
             else
             {
-                Console.WriteLine("\nViaje rechazado: saldo insuficiente");
+                Console.WriteLine("\n❌ Viaje rechazado: saldo insuficiente");
+                Console.WriteLine("Has alcanzado el límite de saldo negativo (-$1200)");
             }
         }
 
@@ -179,18 +193,36 @@ namespace TarjetaSube
             Console.WriteLine("║        INFORMACIÓN DE SALDO        ║");
             Console.WriteLine("╚════════════════════════════════════╝");
             Console.WriteLine($"\nSaldo actual: ${tarjeta.Saldo}");
-            Console.WriteLine($"Viajes disponibles: {(int)(tarjeta.Saldo / 1580)}");
-            Console.WriteLine($"Límite máximo: $40000");
-            Console.WriteLine($"Disponible para cargar: ${40000 - tarjeta.Saldo}");
 
-            if (tarjeta.Saldo < 1580)
+            if (tarjeta.Saldo >= 0)
             {
-                Console.WriteLine($"\nADVERTENCIA: Saldo insuficiente para viajar");
-                Console.WriteLine($"Te faltan: ${1580 - tarjeta.Saldo}");
+                Console.WriteLine($"Viajes disponibles: {(int)(tarjeta.Saldo / 1580)}");
+            }
+            else
+            {
+                Console.WriteLine($"Saldo negativo (VIAJE PLUS usado)");
+                Console.WriteLine($"Crédito utilizado: ${Math.Abs(tarjeta.Saldo)}");
+                Console.WriteLine($"Crédito disponible: ${1200 + tarjeta.Saldo}");
+            }
+
+            Console.WriteLine($"Límite máximo: $40000");
+            Console.WriteLine($"Disponible para cargar: ${40000 - Math.Max(0, tarjeta.Saldo)}");
+
+            if (tarjeta.Saldo < -1200)
+            {
+                Console.WriteLine($"\n⚠ LÍMITE ALCANZADO: No puedes viajar hasta cargar saldo");
+            }
+            else if (tarjeta.Saldo < 0)
+            {
+                Console.WriteLine($"\n⚠ Saldo negativo. Al cargar, se descontará primero esta deuda.");
+            }
+            else if (tarjeta.Saldo < 1580)
+            {
+                Console.WriteLine($"\nℹ Puedes usar VIAJE PLUS (1 viaje con saldo negativo)");
             }
             else if (tarjeta.Saldo < 3160)
             {
-                Console.WriteLine($"\nSaldo bajo: Solo te alcanza para {(int)(tarjeta.Saldo / 1580)} viaje(s)");
+                Console.WriteLine($"\nℹ Saldo bajo: Solo te alcanza para {(int)(tarjeta.Saldo / 1580)} viaje(s)");
             }
         }
 
@@ -205,14 +237,14 @@ namespace TarjetaSube
             Console.WriteLine("\n--- Cargando saldo ---");
             if (miTarjeta.Cargar(5000))
             {
-                Console.WriteLine($"Carga exitosa de $5000");
+                Console.WriteLine($"✓ Carga exitosa de $5000");
                 Console.WriteLine($"Saldo actual: ${miTarjeta.Saldo}");
             }
 
             Console.WriteLine("\n--- Intentando carga inválida ---");
             if (!miTarjeta.Cargar(1500))
             {
-                Console.WriteLine("Carga de $1500 rechazada (monto no permitido)");
+                Console.WriteLine("✗ Carga de $1500 rechazada (monto no permitido)");
             }
 
             Colectivo colectivo = new Colectivo("K");
@@ -223,7 +255,7 @@ namespace TarjetaSube
                 Boleto? boleto = colectivo.PagarCon(miTarjeta);
                 if (boleto != null)
                 {
-                    Console.WriteLine($"\n Viaje {i}:");
+                    Console.WriteLine($"\n✓ Viaje {i}:");
                     Console.WriteLine($"  Línea: {boleto.LineaColectivo}");
                     Console.WriteLine($"  Monto pagado: ${boleto.Monto}");
                     Console.WriteLine($"  Saldo restante: ${boleto.SaldoRestante}");
@@ -237,10 +269,43 @@ namespace TarjetaSube
 
             Console.WriteLine("\n--- Intentando viajar sin saldo suficiente ---");
             Tarjeta tarjetaVacia = new Tarjeta();
-            Boleto? boletoRechazado = colectivo.PagarCon(tarjetaVacia);
-            if (boletoRechazado == null)
+            Boleto? boletoConViajePlus = colectivo.PagarCon(tarjetaVacia);
+            if (boletoConViajePlus != null)
             {
-                Console.WriteLine("Viaje rechazado: saldo insuficiente");
+                Console.WriteLine($"✓ VIAJE PLUS usado. Saldo: ${tarjetaVacia.Saldo}");
+            }
+
+            Console.WriteLine("\n--- Probando diferentes tipos de tarjetas ---");
+
+            // Medio Boleto
+            TarjetaMedioBoleto tarjetaMedio = new TarjetaMedioBoleto();
+            tarjetaMedio.Cargar(2000);
+            Boleto? boletoMedio = colectivo.PagarCon(tarjetaMedio);
+            if (boletoMedio != null)
+            {
+                Console.WriteLine($"\n✓ MEDIO BOLETO:");
+                Console.WriteLine($"  Monto pagado: ${boletoMedio.Monto} (50% de descuento)");
+                Console.WriteLine($"  Saldo restante: ${tarjetaMedio.Saldo}");
+            }
+
+            // Boleto Gratuito
+            TarjetaBoletoGratuito tarjetaGratuita = new TarjetaBoletoGratuito();
+            Boleto? boletoGratuito = colectivo.PagarCon(tarjetaGratuita);
+            if (boletoGratuito != null)
+            {
+                Console.WriteLine($"\n✓ BOLETO GRATUITO:");
+                Console.WriteLine($"  Monto pagado: ${boletoGratuito.Monto}");
+                Console.WriteLine($"  Saldo restante: ${tarjetaGratuita.Saldo}");
+            }
+
+            // Franquicia Completa
+            TarjetaFranquiciaCompleta tarjetaJubilado = new TarjetaFranquiciaCompleta();
+            Boleto? boletoJubilado = colectivo.PagarCon(tarjetaJubilado);
+            if (boletoJubilado != null)
+            {
+                Console.WriteLine($"\n✓ FRANQUICIA COMPLETA (Jubilado):");
+                Console.WriteLine($"  Monto pagado: ${boletoJubilado.Monto}");
+                Console.WriteLine($"  Saldo restante: ${tarjetaJubilado.Saldo}");
             }
 
             Console.WriteLine("\n=== Presiona cualquier tecla para salir ===");

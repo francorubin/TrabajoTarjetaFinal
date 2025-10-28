@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace TarjetaSube
 {
     public class Boleto
@@ -39,6 +40,15 @@ namespace TarjetaSube
             this.saldoRestante = saldoRestante;
             this.lineaColectivo = lineaColectivo;
             this.fecha = DateTime.Now;
+        }
+
+        // Constructor adicional para testing con fecha específica
+        public Boleto(decimal monto, decimal saldoRestante, string lineaColectivo, DateTime fecha)
+        {
+            this.monto = monto;
+            this.saldoRestante = saldoRestante;
+            this.lineaColectivo = lineaColectivo;
+            this.fecha = fecha;
         }
     }
 }

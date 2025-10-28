@@ -3,9 +3,7 @@
 # nuestro codecov
 
 
-[![.NET CI with Coverage](https://github.com/francorubin/TrabajoTarjetaFinal/actions/workflows/dotnet.yml/badge.svg)](https://github.com/francorubin/TrabajoTarjetaFinal/actions/workflows/dotnet.yml)
 [![codecov](https://codecov.io/gh/francorubin/TrabajoTarjetaFinal/branch/main/graph/badge.svg?token=4fc4fe4a-ad6f-415a-b026-c4ae0645030d)](https://codecov.io/gh/francorubin/TrabajoTarjetaFinal)
-
 # Trabajo Tarjeta 2025
 
 El siguiente trabajo es un enunciado iterativo. Regularmente se ampliará y/o modificará el enunciado.
