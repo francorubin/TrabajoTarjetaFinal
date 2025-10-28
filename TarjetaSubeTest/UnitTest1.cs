@@ -98,4 +98,78 @@ namespace TarjetaSubeTest
             Assert.AreEqual(260, tarjeta.Saldo); 
         }
     }
-}
+
+
+
+
+
+[Test]
+        public void TestSaldoNegativoPermitido()
+        {
+            
+            Colectivo colectivo = new Colectivo("K");
+            
+            
+            Boleto? boleto = colectivo.PagarCon(tarjeta);
+            
+     
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(-1580, tarjeta.Saldo);
+        }
+
+        [Test]
+        public void TestSaldoNegativoNoSuperaLimite()
+        {
+    
+            Colectivo colectivo = new Colectivo("K");
+            tarjeta.Cargar(2000);
+            
+     
+            colectivo.PagarCon(tarjeta);
+            colectivo.PagarCon(tarjeta);
+            
+            Assert.AreEqual(-160, tarjeta.Saldo);
+            
+    
+            Boleto? boleto3 = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNull(boleto3);
+            Assert.AreEqual(-160, tarjeta.Saldo); 
+        }
+
+        [Test]
+        public void TestRecargaConSaldoNegativoDescuentaViajePlus()
+        {
+           
+            Colectivo colectivo = new Colectivo("K");
+            
+           
+            colectivo.PagarCon(tarjeta);
+            Assert.AreEqual(-1580, tarjeta.Saldo);
+            
+      
+            tarjeta.Cargar(3000);
+            
+           
+            Assert.AreEqual(1420, tarjeta.Saldo);
+        }
+
+        [Test]
+        public void TestMultiplesViajesPlusYRecarga()
+        {
+            Colectivo colectivo = new Colectivo("K");
+            
+   
+            colectivo.PagarCon(tarjeta);
+            Assert.AreEqual(-1580, tarjeta.Saldo);
+            
+         
+            Boleto? boleto2 = colectivo.PagarCon(tarjeta);
+            Assert.IsNull(boleto2);
+            Assert.AreEqual(-1580, tarjeta.Saldo);
+            
+      
+            tarjeta.Cargar(5000);
+            Assert.AreEqual(3420, tarjeta.Saldo); 
+        }
+    }
